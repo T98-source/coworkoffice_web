@@ -24,18 +24,6 @@ function initJsGrid() {
                         "Authorization": "Bearer " + keycloak.token
                     }
                 });
-            },
-            updateItem: function (item) {
-                return $.ajax({
-                    type: "PUT",
-                    url: RESTAPI + "/slots",
-                    data: JSON.stringify(item),
-                    contentType: "application/json",
-                    dataType: "json",
-                    headers: {
-                        "Authorization": "Bearer " + keycloak.token
-                    }
-                });
             }
         },
 
@@ -44,18 +32,58 @@ function initJsGrid() {
             if(window.clickButton) {
                 if (document.getElementById(args.item.orario + args.item.data).innerHTML == "Libera"){
                     if(confirm("Vuoi cancellare questa prenotazione?")) {
-                        $row.removeClass("green");
-                        $row.toggleClass("white");
-                        document.getElementById(args.item.orario + args.item.data).innerHTML = "Occupa"
-                        document.getElementById(args.item.orario + args.item.data).style.background = "#198754";
+                        $.ajax({
+                            type: "DELETE",
+                            url: RESTAPI + "/slots/" + getCookie("ufficioId"),
+                            data: JSON.stringify(args.item),
+                            contentType: "application/json",
+                            dataType: "json",
+                            headers: {
+                                "Authorization": "Bearer " + keycloak.token
+                            },
+                            success: function() {
+                                $row.removeClass("green");
+                                $row.toggleClass("white");
+                                document.getElementById(args.item.orario + args.item.data).innerHTML = "Occupa"
+                                document.getElementById(args.item.orario + args.item.data).style.background = "#198754";
+                            },
+                            error: function(){
+                                alert("Si è verificato un errore. Riprovare.");
+                            }
+                        });
                     }
                 }
                 else {
-                    $row.removeClass("white");
-                    $row.toggleClass("green");
-                    document.getElementById(args.item.orario + args.item.data).innerHTML = "Libera"
-                    document.getElementById(args.item.orario + args.item.data).style.background = "brown";
-                    alert("Prenotazione effettuata con successo.");
+                    var clienti = prompt("Clienti stimati:");
+                    if(!(clienti == parseInt(clienti))) {// Allora non è un numero intero
+                        alert("Inserisci un numero intero.");
+                        return;
+                    }
+                    if(clienti > 4){
+                        alert("Non si possono servire più di 4 clienti in un ora.");
+                        return;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: RESTAPI + "/slots/" + getCookie("ufficioId") + '/' + clienti,
+                        data: JSON.stringify(args.item),
+                        contentType: "application/json",
+                        dataType: "json",
+                        headers: {
+                            "Authorization": "Bearer " + keycloak.token
+                        },
+                        success: function() {
+                            $row.removeClass("white");
+                            $row.toggleClass("green");
+                            document.getElementById(args.item.orario + args.item.data).innerHTML = "Libera"
+                            document.getElementById(args.item.orario + args.item.data).style.background = "brown";
+                            alert("Prenotazione effettuata con successo.");
+                        },
+                        error: function(){
+                            alert("Si è verificato un errore. Riprovare.");
+                        }
+                    });
                 }
                 window.clickButton = false;
             }
