@@ -27,68 +27,6 @@ function initJsGrid() {
             }
         },
 
-        rowClick: function(args) {
-            var $row = this.rowByItem(args.item);
-            if(window.clickButton) {
-                if (document.getElementById(args.item.orario + args.item.data).innerHTML == "Libera"){
-                    if(confirm("Vuoi cancellare questa prenotazione?")) {
-                        $.ajax({
-                            type: "DELETE",
-                            url: RESTAPI + "/slots/" + getCookie("ufficioId"),
-                            data: JSON.stringify(args.item),
-                            contentType: "application/json",
-                            dataType: "json",
-                            headers: {
-                                "Authorization": "Bearer " + keycloak.token
-                            },
-                            success: function() {
-                                $row.removeClass("green");
-                                $row.toggleClass("white");
-                                document.getElementById(args.item.orario + args.item.data).innerHTML = "Occupa"
-                                document.getElementById(args.item.orario + args.item.data).style.background = "#198754";
-                            },
-                            error: function(){
-                                alert("Si è verificato un errore. Riprovare.");
-                            }
-                        });
-                    }
-                }
-                else {
-                    var clienti = prompt("Clienti stimati:");
-                    if(!(clienti == parseInt(clienti))) {// Allora non è un numero intero
-                        alert("Inserisci un numero intero.");
-                        return;
-                    }
-                    if(clienti > 4){
-                        alert("Non si possono servire più di 4 clienti in un ora.");
-                        return;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: RESTAPI + "/slots/" + getCookie("ufficioId") + '/' + clienti,
-                        data: JSON.stringify(args.item),
-                        contentType: "application/json",
-                        dataType: "json",
-                        headers: {
-                            "Authorization": "Bearer " + keycloak.token
-                        },
-                        success: function() {
-                            $row.removeClass("white");
-                            $row.toggleClass("green");
-                            document.getElementById(args.item.orario + args.item.data).innerHTML = "Libera"
-                            document.getElementById(args.item.orario + args.item.data).style.background = "brown";
-                            alert("Prenotazione effettuata con successo.");
-                        },
-                        error: function(){
-                            alert("Si è verificato un errore. Riprovare.");
-                        }
-                    });
-                }
-                window.clickButton = false;
-            }
-        },
-
         fields: [
             {name: "orario", type: "text", title: "Orario"},
             {name: "data", type: "text", title: "Data"},
@@ -99,22 +37,41 @@ function initJsGrid() {
                  * all'interno della cella riservata ai pulsanti di controllo
                  */
                 itemTemplate: function (value, item) {
-                    window.clickButton = false;
                     var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
                     /*
                      * Aggiungo un pulsante custom che è un tag button, decorato in questo modo:
                      */
-                    var $customButton = $("<button>")
-                        // attributi che mi porto dietro da bootstrap, per lo stile
-                        .attr({id: item.orario + item.data, class: "btn btn-success btn-sm"})
-                        // Button con testo "Prenota"
-                        .text("Occupa")
-                        /*
-                         * L'azione che deve essere fatta al click del pulsante
-                         */
-                        .click(function(e) {
-                            window.clickButton = true;
-                        });
+                    var $customButton;
+
+                    var $row = $("#jsGrid").jsGrid("rowByItem", item);
+                    if (!item.libero){
+                        $row.toggleClass("green");
+
+                        $customButton = $("<button>")
+                            // attributi che mi porto dietro da bootstrap, per lo stile
+                            .attr({id: item.orario + item.data, class: "btn btn-success btn-sm", style: "background-color: brown"})
+                            // Button con testo "Prenota"
+                            .text("Libera")
+                            /*
+                             * L'azione che deve essere fatta al click del pulsante
+                             */
+                            .click(function(e) {
+                                manageReservations(item)
+                            });
+                    } else {
+                        $customButton = $("<button>")
+                            // attributi che mi porto dietro da bootstrap, per lo stile
+                            .attr({id: item.orario + item.data, class: "btn btn-success btn-sm"})
+                            // Button con testo "Prenota"
+                            .text("Occupa")
+                            /*
+                             * L'azione che deve essere fatta al click del pulsante
+                             */
+                            .click(function (e) {
+                                manageReservations(item)
+                            });
+                    }
+
                     return $result.add($customButton);
                 }
             }
@@ -136,4 +93,63 @@ function getCookie(cname) {
         }
     }
     return "";
+}
+
+function manageReservations(item){
+    var $row = $("#jsGrid").jsGrid("rowByItem", item);
+    if (document.getElementById(item.orario + item.data).innerHTML == "Libera"){
+        if(confirm("Vuoi cancellare questa prenotazione?")) {
+            $.ajax({
+                type: "DELETE",
+                url: RESTAPI + "/slots/" + getCookie("ufficioId"),
+                data: JSON.stringify(item),
+                contentType: "application/json",
+                dataType: "json",
+                headers: {
+                    "Authorization": "Bearer " + keycloak.token
+                },
+                success: function() {
+                    $row.removeClass("green");
+                    $row.toggleClass("white");
+                    document.getElementById(item.orario + item.data).innerHTML = "Occupa"
+                    document.getElementById(item.orario + item.data).style.background = "#198754";
+                },
+                error: function(){
+                    alert("Si è verificato un errore. Riprovare.");
+                }
+            });
+        }
+    }
+    else {
+        var clienti = prompt("Clienti stimati:");
+        if(!(clienti == parseInt(clienti))) {// Allora non è un numero intero
+            alert("Inserisci un numero intero.");
+            return;
+        }
+        if(clienti > 4){
+            alert("Non si possono servire più di 4 clienti in un ora.");
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: RESTAPI + "/slots/" + getCookie("ufficioId") + '/' + clienti,
+            data: JSON.stringify(item),
+            contentType: "application/json",
+            dataType: "json",
+            headers: {
+                "Authorization": "Bearer " + keycloak.token
+            },
+            success: function() {
+                $row.removeClass("white");
+                $row.toggleClass("green");
+                document.getElementById(item.orario + item.data).innerHTML = "Libera"
+                document.getElementById(item.orario + item.data).style.background = "brown";
+                alert("Prenotazione effettuata con successo.");
+            },
+            error: function(){
+                alert("Si è verificato un errore. Riprovare.");
+            }
+        });
+    }
 }
