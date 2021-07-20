@@ -10,6 +10,6 @@
 
 <?php include('shared/footer.php');?>
 <?php include('shared/script.php');?>
-<script type="text/javascript" src="./js/book.js"></script>
+<script type="text/javascript" src="js/slots.js"></script>
 </body>
 </html>

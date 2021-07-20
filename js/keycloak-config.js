@@ -12,7 +12,7 @@ function initKeycloak() {
             });
         }
         else
-            jQuery("#div_session_write").load("shared/session_write.php?authenticated=0");
+            document.cookie = "authenticated=0";
 
         //alert(authenticated ? 'authenticated' : 'not authenticated');
 
@@ -24,10 +24,10 @@ function initKeycloak() {
 
 function login() {
     keycloak.login();
-    jQuery("#div_session_write").load("shared/session_write.php?authenticated=1");
+    document.cookie = "authenticated=1";
 }
 
 function logout() {
     keycloak.logout();
-    jQuery("#div_session_write").load("shared/session_write.php?authenticated=0");
+    document.cookie = "authenticated=0";
 }

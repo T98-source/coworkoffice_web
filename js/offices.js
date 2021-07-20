@@ -70,11 +70,35 @@ function initJsGrid() {
             }
         },
 
-
-            fields: [
-                {name: "id", type: "text", title: "Id", visible: false},
-                {name: "descrizione", type: "text", title: "Descrizione",width:100},
-                {type: "control"}
-            ]
-        });
+        fields: [
+            {name: "id", type: "text", title: "Id", visible: false},
+            {name: "descrizione", type: "text", title: "Descrizione"},
+            {
+                /*
+                 * itemTemplate è una funzione JavaScript che vi permette di definire che cosa deve comparire su ogni riga
+                 * all'interno della cella riservata ai pulsanti di controllo
+                 */
+                itemTemplate: function (value, item) {
+                    var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+                    /*
+                     * Aggiungo un pulsante custom che è un tag button, decorato in questo modo:
+                     */
+                    var $customButton = $("<button>")
+                        // attributi che mi porto dietro da bootstrap, per lo stile
+                        .addClass("btn btn-success btn-sm")
+                        // Button con testo "Prenota"
+                        .text("Prenota")
+                        /*
+                         * L'azione che deve essere fatta al click del pulsante
+                         */
+                        .click(function(e) {
+                            document.cookie = "ufficioId=" + item.id;
+                            window.location.href = '/coworkoffice_web/slots.php';
+                        });
+                    return $result.add($customButton);
+                }
+            },
+            {type: "control"}
+        ]
+    });
 }
