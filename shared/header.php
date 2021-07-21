@@ -14,6 +14,7 @@
                 <li><a href="reservations.php" class="nav-link px-2 text-white">Prenotazioni</a></li>
                 <li><a href="sensors.php" class="nav-link px-2 text-white">Sensori</a></li>
                 <li><a href="actuators.php" class="nav-link px-2 text-white">Attuatori</a></li>
+                <li><a href="measures.php" class="nav-link px-2 text-white">Misure</a></li>
             </ul>
 
             <div class="text-end">
