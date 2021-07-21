@@ -58,7 +58,6 @@ function initJsGrid() {
         },
         fields: [
             {name: "id", type: "text", title: "Id", visible: false},
-            {name: "descrizione", type: "text", title: "Descrizione"},
             {name: "data", type: "text", title: "Data"},
             {name: "ora_inizio", type: "text", title: "Ora Inizio"},
             {name: "ora_fine", type: "text", title: "Ora Fine"},
