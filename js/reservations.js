@@ -58,12 +58,12 @@ function initJsGrid() {
         },
         fields: [
             {name: "id", type: "text", title: "Id", visible: false},
-            {name: "data", type: "text", title: "Data"},
-            {name: "ora_inizio", type: "text", title: "Ora Inizio"},
-            {name: "ora_fine", type: "text", title: "Ora Fine"},
-            {name: "clienti", type: "text", title: "Numero Clienti"},
-            {name: "ufficio_id", type: "text", title: "Id Ufficio"},
-            {name: "utente_id", type: "text", title: "Id Utente"},
+            {name: "date", type: "text", title: "Data"},
+            {name: "startHour", type: "text", title: "Ora Inizio"},
+            {name: "finalHour", type: "text", title: "Ora Fine"},
+            {name: "clients", type: "text", title: "Numero Clienti"},
+            {name: "officeId", type: "text", title: "Id Ufficio"},
+            {name: "userId", type: "text", title: "Id Utente"},
             {type: "control"}
         ]
     });

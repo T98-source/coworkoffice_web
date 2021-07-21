@@ -72,7 +72,7 @@ function initJsGrid() {
 
         fields: [
             {name: "id", type: "text", title: "Id", visible: false},
-            {name: "descrizione", type: "text", title: "Descrizione"},
+            {name: "description", type: "text", title: "Descrizione"},
             {
                 /*
                  * itemTemplate è una funzione JavaScript che vi permette di definire che cosa deve comparire su ogni riga

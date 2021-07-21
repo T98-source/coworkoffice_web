@@ -3,9 +3,6 @@
 <meta name="description" content="">
 <title>CoWorkOffice</title>
 
-<!-- CSS -->
-<link href="./lib/css/style.css" rel="stylesheet" type="text/css">
-
 <!-- Bootstrap core CSS -->
 <link href="./lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 

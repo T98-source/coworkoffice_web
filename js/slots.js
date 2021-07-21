@@ -7,7 +7,6 @@ function initJsGrid() {
         inserting: false,
         editing: false,
         sorting: true,
-        paging: true,
         filtering: true,
 
         autoload: true,
@@ -27,10 +26,19 @@ function initJsGrid() {
             }
         },
 
+        onDataLoaded: function(args) {
+            args.data.forEach( function(item){
+                var $row = $("#jsGrid").jsGrid("rowByItem", item);
+                if (!item.free) {
+                    $row.find("td").css("background-color", "#90EE90");
+                }
+            })
+        },
+
         fields: [
-            {name: "orario", type: "text", title: "Orario"},
-            {name: "data", type: "text", title: "Data"},
-            {name: "libero", type: "checkbox", title: "Prenota", visible: false},
+            {name: "schedule", type: "text", title: "Orario"},
+            {name: "date", type: "text", title: "Data"},
+            {name: "free", type: "checkbox", title: "Libero", visible: false},
             {
                 /*
                  * itemTemplate è una funzione JavaScript che vi permette di definire che cosa deve comparire su ogni riga
@@ -44,12 +52,11 @@ function initJsGrid() {
                     var $customButton;
 
                     var $row = $("#jsGrid").jsGrid("rowByItem", item);
-                    if (!item.libero){
-                        $row.toggleClass("green");
-
+                    if (!item.free){
+                        $row.find("td").css("background-color", "#90EE90");
                         $customButton = $("<button>")
                             // attributi che mi porto dietro da bootstrap, per lo stile
-                            .attr({id: item.orario + item.data, class: "btn btn-success btn-sm", style: "background-color: brown"})
+                            .attr({id: item.schedule + item.date, class: "btn btn-success btn-sm", style: "background-color: brown"})
                             // Button con testo "Prenota"
                             .text("Libera")
                             /*
@@ -61,7 +68,7 @@ function initJsGrid() {
                     } else {
                         $customButton = $("<button>")
                             // attributi che mi porto dietro da bootstrap, per lo stile
-                            .attr({id: item.orario + item.data, class: "btn btn-success btn-sm"})
+                            .attr({id: item.schedule + item.date, class: "btn btn-success btn-sm"})
                             // Button con testo "Prenota"
                             .text("Occupa")
                             /*
@@ -97,7 +104,7 @@ function getCookie(cname) {
 
 function manageReservations(item){
     var $row = $("#jsGrid").jsGrid("rowByItem", item);
-    if (document.getElementById(item.orario + item.data).innerHTML == "Libera"){
+    if (!item.free){
         if(confirm("Vuoi cancellare questa prenotazione?")) {
             $.ajax({
                 type: "DELETE",
@@ -109,10 +116,9 @@ function manageReservations(item){
                     "Authorization": "Bearer " + keycloak.token
                 },
                 success: function() {
-                    $row.removeClass("green");
-                    $row.toggleClass("white");
-                    document.getElementById(item.orario + item.data).innerHTML = "Occupa"
-                    document.getElementById(item.orario + item.data).style.background = "#198754";
+                    $row.find("td").css("background-color", "#fcfcfc");
+                    document.getElementById(item.schedule + item.date).innerHTML = "Occupa"
+                    document.getElementById(item.schedule + item.date).style.backgroundColor = "#198754";
                 },
                 error: function(){
                     alert("Si è verificato un errore. Riprovare.");
@@ -121,19 +127,19 @@ function manageReservations(item){
         }
     }
     else {
-        var clienti = prompt("Clienti stimati:");
-        if(!(clienti == parseInt(clienti))) {// Allora non è un numero intero
+        var clients = prompt("Clienti stimati:");
+        if(!(clients == parseInt(clients))) {// Allora non è un numero intero
             alert("Inserisci un numero intero.");
             return;
         }
-        if(clienti > 4){
+        if(clients > 4){
             alert("Non si possono servire più di 4 clienti in un ora.");
             return;
         }
 
         $.ajax({
             type: "POST",
-            url: RESTAPI + "/slots/" + getCookie("ufficioId") + '/' + clienti,
+            url: RESTAPI + "/slots/" + getCookie("ufficioId") + '/' + clients,
             data: JSON.stringify(item),
             contentType: "application/json",
             dataType: "json",
@@ -141,10 +147,9 @@ function manageReservations(item){
                 "Authorization": "Bearer " + keycloak.token
             },
             success: function() {
-                $row.removeClass("white");
-                $row.toggleClass("green");
-                document.getElementById(item.orario + item.data).innerHTML = "Libera"
-                document.getElementById(item.orario + item.data).style.background = "brown";
+                $row.find("td").css("background-color", "#90EE90");
+                document.getElementById(item.schedule + item.date).innerHTML = "Libera"
+                document.getElementById(item.schedule + item.date).style.backgroundColor = "brown";
                 alert("Prenotazione effettuata con successo.");
             },
             error: function(){
