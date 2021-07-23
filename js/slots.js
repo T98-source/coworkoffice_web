@@ -63,7 +63,7 @@ function initJsGrid() {
                              * L'azione che deve essere fatta al click del pulsante
                              */
                             .click(function(e) {
-                                manageReservations(item)
+                                manageReservations(item);
                             });
                     } else {
                         $customButton = $("<button>")
@@ -75,7 +75,7 @@ function initJsGrid() {
                              * L'azione che deve essere fatta al click del pulsante
                              */
                             .click(function (e) {
-                                manageReservations(item)
+                                manageReservations(item);
                             });
                     }
 
@@ -104,7 +104,7 @@ function getCookie(cname) {
 
 function manageReservations(item){
     var $row = $("#jsGrid").jsGrid("rowByItem", item);
-    if (!item.free){
+    if (document.getElementById(item.schedule + item.date).innerHTML == "Libera"){
         if(confirm("Vuoi cancellare questa prenotazione?")) {
             $.ajax({
                 type: "DELETE",
