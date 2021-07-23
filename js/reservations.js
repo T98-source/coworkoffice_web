@@ -1,6 +1,6 @@
 const RESTAPI = "http://127.0.0.1:4567/api/v1.0";
 
-function initJsGrid() {
+function initGrid(offices) {
     $("#jsGrid").jsGrid({
         width: "100%",
 
@@ -13,11 +13,7 @@ function initJsGrid() {
         autoload: true,
         pageLoading: false,
 
-
-        pageSize: 10,
-        pageButtonCount: 5,
-        deleteConfirm: "Do you really want to delete data?",
-        insertConfirm: "Vuoi davvero inserire questo item?",
+        deleteConfirm: "Vuoi davvero eliminare questa prenotazione?",
 
 
         controller: {
@@ -27,18 +23,6 @@ function initJsGrid() {
                     url: RESTAPI + "/reservations",
                     data: filter,
                     contentType: "application/json",
-                    headers: {
-                        "Authorization": "Bearer " + keycloak.token
-                    }
-                });
-            },
-            insertItem: function (item) {
-                return $.ajax({
-                    type: "POST",
-                    url: RESTAPI + "/reservations",
-                    data: JSON.stringify(item),
-                    contentType: "application/json",
-                    dataType: "json",
                     headers: {
                         "Authorization": "Bearer " + keycloak.token
                     }
@@ -56,15 +40,34 @@ function initJsGrid() {
                 });
             }
         },
+
+        onDataLoaded: function(args) {
+            $("#jsGrid").jsGrid("sort", 2);
+        },
+
         fields: [
             {name: "id", type: "text", title: "Id", visible: false},
             {name: "date", type: "text", title: "Data"},
-            {name: "startHour", type: "text", title: "Ora Inizio"},
-            {name: "finalHour", type: "text", title: "Ora Fine"},
-            {name: "clients", type: "text", title: "Numero Clienti"},
-            {name: "officeId", type: "text", title: "Id Ufficio"},
-            {name: "userId", type: "text", title: "Id Utente"},
+            {name: "startHour", type: "number", title: "Ora Inizio"},
+            {name: "finalHour", type: "number", title: "Ora Fine"},
+            {name: "clients", type: "number", title: "Numero Clienti", filtering: false},
+            {name: "officeId", type: "select", items: offices, valueField: "id", textField: "description", title: "Ufficio"},
+            {name: "userId", type: "text", title: "Id Utente", visible: false},
             {type: "control"}
         ]
+    });
+}
+
+function initJsGrid(){
+    $.ajax({
+        type: "GET",
+        url: RESTAPI + "/offices",
+        contentType: "application/json",
+        headers: {
+            "Authorization": "Bearer " + keycloak.token
+        }
+    }).then(function (offices) {
+        offices.unshift("");
+        initGrid(offices);
     });
 }

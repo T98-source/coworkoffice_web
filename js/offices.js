@@ -14,12 +14,6 @@ function initJsGrid() {
         pageLoading: false,
 
 
-        pageSize: 10,
-        pageButtonCount: 5,
-        deleteConfirm: "Do you really want to delete data?",
-        insertConfirm: "Vuoi davvero inserire questo item?",
-
-
         controller: {
             loadData: function (filter) {
                 return $.ajax({
@@ -55,7 +49,6 @@ function initJsGrid() {
                         "Authorization": "Bearer " + keycloak.token
                     }
                 });
-
             },
             deleteItem: function (item) {
                 return $.ajax({
@@ -66,7 +59,6 @@ function initJsGrid() {
                         "Authorization": "Bearer " + keycloak.token
                     }
                 });
-
             }
         },
 

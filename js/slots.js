@@ -81,7 +81,8 @@ function initJsGrid() {
 
                     return $result.add($customButton);
                 }
-            }
+            },
+            {type: "control"}
         ]
     });
 }
