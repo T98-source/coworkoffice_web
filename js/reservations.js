@@ -15,7 +15,6 @@ function initGrid(offices) {
 
         deleteConfirm: "Vuoi davvero eliminare questa prenotazione?",
 
-
         controller: {
             loadData: function (filter) {
                 return $.ajax({

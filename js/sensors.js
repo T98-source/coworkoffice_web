@@ -13,7 +13,6 @@ function initJsGrid() {
         autoload: true,
         pageLoading: false,
 
-        insertConfirm: "Vuoi davvero inserire questo item?",
         controller: {
             loadData: function (filter) {
                 return $.ajax({
@@ -66,8 +65,8 @@ function initJsGrid() {
 
         fields: [
             {name: "id", type: "text", title: "Id", visible: false},
-            {name: "descrizione", type: "text", title: "Descrizione",width:100},
-            {name: "locale_id", type: "text", title: "Id Locale"},
+            {name: "description", type: "text", title: "Descrizione"},
+            {name: "localId", type: "text", title: "Id Locale"},
             {type: "control"}
         ]
     });

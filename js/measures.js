@@ -1,6 +1,6 @@
 const RESTAPI = "http://127.0.0.1:4567/api/v1.0";
 
-function initJsGrid() {
+function initGrid(locals, sensors) {
     $("#jsGrid").jsGrid({
         width: "100%",
 
@@ -63,18 +63,43 @@ function initJsGrid() {
             }
         },
 
+        onDataLoaded: function(args) {
+            $("#jsGrid").jsGrid("sort", 3);
+            $("#jsGrid").jsGrid("sort", 3); // Ordine decrescente
+        },
+
         fields: [
             {name: "id", type: "text", title: "Id", visible: false},
-            {name: "tipo", type: "text", title: "Tipo",width:100},
-            {name: "misurazione", type: "text", title: "Misurazione"},
-            {name: "data", type: "text", title: "Data"},
-
-            /*  serve se volessimo fare la scelta a tendina con valori obbligati
-            items:[{Name:"",Id:''}, {Name:"1", Id:'1'},{Name:"0", Id:'0'}],
-            valueField: "Id",
-            textField: "Name", },*/
-            {name: "sensore_id", type: "text", title: "Id Sensore"},
+            {name: "type", type: "text", title: "Tipo"},
+            {name: "measurement", type: "text", title: "Misurazione"},
+            {name: "dateTime", type: "text", title: "Data e ora"},
+            {name: "sensorId", type: "select", items: sensors, valueField: "id", textField: "description", title: "Sensore", filtering: false},
+            {name: "localId", type: "select", items: locals, valueField: "id", textField: "description", title: "Locale"},
             {type: "control"}
         ]
+    });
+}
+
+function initJsGrid(){
+    $.ajax({
+        type: "GET",
+        url: RESTAPI + "/locals",
+        contentType: "application/json",
+        headers: {
+            "Authorization": "Bearer " + keycloak.token
+        }
+    }).then(function (locals) {
+        locals.unshift("");
+        $.ajax({
+            type: "GET",
+            url: RESTAPI + "/sensors",
+            contentType: "application/json",
+            headers: {
+                "Authorization": "Bearer " + keycloak.token
+            }
+        }).then(function (sensors) {
+            sensors.unshift("");
+            initGrid(locals, sensors);
+        });
     });
 }
