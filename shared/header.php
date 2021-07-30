@@ -3,7 +3,14 @@
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <ul id="nav" class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="index.php" class="nav-link px-2 text-secondary">Home</a></li>
-                <li><a href="offices.php" class="nav-link px-2 text-white">Uffici</a></li>
+                <?php
+                if($_COOKIE["authenticated"] == 1 && $_COOKIE["admin"] == 0) { ?>
+                    <li><a href="offices.php" class="nav-link px-2 text-white">Uffici</a></li>
+                <?php } ?>
+                <?php
+                if($_COOKIE["authenticated"] == 1 && $_COOKIE["admin"] == 1) { ?>
+                    <li><a href="locals.php" class="nav-link px-2 text-white">Locali</a></li>
+                <?php } ?>
                 <li><a href="reservations.php" class="nav-link px-2 text-white">Prenotazioni</a></li>
                 <?php
                 if($_COOKIE["authenticated"] == 1 && $_COOKIE["admin"] == 1) { ?>

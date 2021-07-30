@@ -3,7 +3,8 @@
 <head>
     <?php include('shared/head.php');?>
 </head>
-<body onload="initKeycloak()">
+<body onload="initKeycloak(),getrole()">
+
     <?php include('shared/header.php');?>
 
     <?php include('shared/footer.php');?>

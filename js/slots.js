@@ -9,6 +9,10 @@ function initJsGrid() {
         sorting: true,
         filtering: true,
 
+        paging: true,
+        pageSize:12,
+
+
         autoload: true,
         pageLoading: false,
 

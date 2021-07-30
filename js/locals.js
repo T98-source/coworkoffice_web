@@ -19,7 +19,7 @@ function initJsGrid() {
             loadData: function (filter) {
                 return $.ajax({
                     type: "GET",
-                    url: RESTAPI + "/offices",
+                    url: RESTAPI + "/locals",
                     data: filter,
                     contentType: "application/json",
                     headers: {
@@ -30,7 +30,7 @@ function initJsGrid() {
             insertItem: function (item) {
                 return $.ajax({
                     type: "POST",
-                    url: RESTAPI + "/offices",
+                    url: RESTAPI + "/locals",
                     data: JSON.stringify(item),
                     contentType: "application/json",
                     dataType: "json",
@@ -42,7 +42,7 @@ function initJsGrid() {
             updateItem: function (item) {
                 return $.ajax({
                     type: "PUT",
-                    url: RESTAPI + "/offices",
+                    url: RESTAPI + "/locals",
                     data: JSON.stringify(item),
                     contentType: "application/json",
                     dataType: "json",
@@ -54,7 +54,7 @@ function initJsGrid() {
             deleteItem: function (item) {
                 return $.ajax({
                     type: "DELETE",
-                    url: RESTAPI + "/offices/" + item.id,
+                    url: RESTAPI + "/locals/" + item.tipo,
                     contentType: "application/json",
                     headers: {
                         "Authorization": "Bearer " + keycloak.token
@@ -66,31 +66,8 @@ function initJsGrid() {
         fields: [
             {name: "id", type: "text", title: "Id", visible: false},
             {name: "description", type: "text", title: "Descrizione"},
-            {
-                /*
-                 * itemTemplate è una funzione JavaScript che vi permette di definire che cosa deve comparire su ogni riga
-                 * all'interno della cella riservata ai pulsanti di controllo
-                 */
-                itemTemplate: function (value, item) {
-                    var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
-                    /*
-                     * Aggiungo un pulsante custom che è un tag button, decorato in questo modo:
-                     */
-                    var $customButton = $("<button>")
-                        // attributi che mi porto dietro da bootstrap, per lo stile
-                        .addClass("btn btn-success btn-sm")
-                        // Button con testo "Prenota"
-                        .text("Prenota")
-                        /*
-                         * L'azione che deve essere fatta al click del pulsante
-                         */
-                        .click(function(e) {
-                            document.cookie = "ufficioId=" + item.id;
-                            window.location.href = '/coworkoffice_web/slots.php';
-                        });
-                    return $result.add($customButton);
-                }
-            },
+            {name: "type", type: "text", title: "Tipo",visible: false},
+            {name: "num_posti", type: "text", title: "Numero posti"},
             {type: "control"}
         ]
     });

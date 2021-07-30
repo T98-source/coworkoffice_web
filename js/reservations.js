@@ -7,8 +7,10 @@ function initGrid(offices) {
         inserting: true,
         editing: true,
         sorting: true,
-        paging: false,
         filtering: true,
+
+        paging: true,
+        pageSize: 10,
 
         autoload: true,
         pageLoading: false,
